@@ -84,12 +84,45 @@ WSGI_APPLICATION = 'django_ecommerse.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+import shutil
+
+DATABASE_URL = os.getenv('DATABASE_URL', '')
+if DATABASE_URL:
+    try:
+        import dj_database_url
+        DATABASES = {
+            'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
+        }
+    except Exception:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
+else:
+    # On Vercel Serverless, the code directory /var/task is strictly READ-ONLY.
+    # SQLite requires write access for locking and journaling.
+    # We copy the database to /tmp/db.sqlite3 which is fully writable in AWS Lambda / Vercel.
+    IS_VERCEL = os.getenv('VERCEL') == '1' or 'VERCEL' in os.environ
+    if IS_VERCEL:
+        tmp_db = Path('/tmp') / 'db.sqlite3'
+        bundled_db = BASE_DIR / 'db.sqlite3'
+        if not tmp_db.exists() and bundled_db.exists():
+            try:
+                shutil.copyfile(bundled_db, tmp_db)
+            except Exception:
+                pass
+        db_path = tmp_db if tmp_db.exists() else bundled_db
+    else:
+        db_path = BASE_DIR / 'db.sqlite3'
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': db_path,
+        }
     }
-}
 
 
 # Password validation
