@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+    <div class="container my-5">
+
+      <div class="text-center mb-5" data-aos="fade-up">
+        <h2 class="section-title text-secondary">
+          <i class="fa-solid fa-layer-group me-2"></i>
+          {% if category %}{{ category.name }}{% else %}{% trans 'جميع الأقسام' %}{% endif %}
+        </h2>
+      </div>
+
+      <section>
+        <div class="row g-4">
+          <div class="col-lg-3 col-md-4 cat-sidebar" data-aos="fade-left" data-aos-duration="400">
+            <div class="list-group">
+              <a href="{% url 'store:category' %}"
+                class="list-group-item list-group-item-action d-flex align-items-center gap-2 {% if not category %}active{% endif %}">
+                <i class="fa-solid fa-border-all"></i> الكل
+              </a>
+              {% for cat in categories %}
+              <a href="{% url 'store:category-detail' cid=cat.id %}"
+                class="list-group-item list-group-item-action d-flex align-items-center gap-2 {% if category and category.id == cat.id %}active{% endif %}">
+                <i class="fa-solid fa-folder"></i> {{ cat.name }}
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="col-lg-9 col-md-8">
+            <div class="row g-4">
+              {% for product in products %}
+              <div class="col-lg-4 col-md-6 col-sm-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}40">
+                {% include 'common/product_card.html' with product=product %}
+              </div>
+              {% empty %}
+              <div class="col-12 text-center py-5" data-aos="zoom-in">
+                <i class="fa-solid fa-box-open empty-cart-icon mb-3 d-block"></i>
+                <p class="h5 text-muted">لا توجد منتجات في هذا القسم حالياً.</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+{% endblock %}

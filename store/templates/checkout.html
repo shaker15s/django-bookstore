@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+    <div class="container my-5">
+
+      <div class="text-center mb-5" data-aos="fade-down">
+        <h2 class="section-title text-secondary">
+          <i class="fa-solid fa-credit-card me-2"></i> إتمام الشراء
+        </h2>
+      </div>
+
+      {% if not cart_items %}
+      <div class="text-center py-5">
+        <i class="fa-solid fa-cart-shopping empty-cart-icon mb-4 d-block"></i>
+        <h4 class="text-secondary">سلتك فارغة!</h4>
+        <a href="{% url 'store:home' %}" class="btn btn-primary mt-3">تصفّح الكتب</a>
+      </div>
+      {% else %}
+
+      <form method="POST" action="{% url 'store:process-checkout' %}" novalidate id="checkout-form">
+        {% csrf_token %}
+        <input type="hidden" name="payment_method" id="payment_method_input" value="">
+
+        <div class="row g-4">
+
+          <!-- ── Checkout Form Column ─────────────────────────────────── -->
+          <div class="col-lg-7" data-aos="fade-left">
+
+            <!-- Step 1: Personal Info -->
+            <div class="checkout-card mb-4">
+              <div class="checkout-card-header">
+                <span class="checkout-step-badge">١</span>
+                <h5 class="fw-bold mb-0">معلوماتك الشخصية</h5>
+              </div>
+              <div class="checkout-card-body">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="firstNameInput" class="checkout-label">الاسم الأول *</label>
+                    <input type="text" class="form-control checkout-input {% if errors.first_name %}is-invalid{% endif %}"
+                           id="firstNameInput" name="first_name"
+                           value="{{ form_data.first_name|default:'' }}"
+                           placeholder="مثال: أحمد" />
+                    {% if errors.first_name %}
+                    <div class="invalid-feedback">{{ errors.first_name }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-6">
+                    <label for="lastNameInput" class="checkout-label">الاسم الأخير *</label>
+                    <input type="text" class="form-control checkout-input {% if errors.last_name %}is-invalid{% endif %}"
+                           id="lastNameInput" name="last_name"
+                           value="{{ form_data.last_name|default:'' }}"
+                           placeholder="مثال: محمد" />
+                    {% if errors.last_name %}
+                    <div class="invalid-feedback">{{ errors.last_name }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="col-12">
+                    <label for="emailInput" class="checkout-label">البريد الإلكتروني * <small class="text-muted">(سيُرسل تأكيد الطلب عليه)</small></label>
+                    <input type="email" class="form-control checkout-input {% if errors.email %}is-invalid{% endif %}"
+                           id="emailInput" name="email"
+                           value="{{ form_data.email|default:'' }}"
+                           placeholder="example@email.com" />
+                    {% if errors.email %}
+                    <div class="invalid-feedback">{{ errors.email }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="col-12">
+                    <label for="phoneInput" class="checkout-label">رقم الهاتف</label>
+                    <input type="tel" class="form-control checkout-input"
+                           id="phoneInput" name="phone"
+                           value="{{ form_data.phone|default:'' }}"
+                           placeholder="+963 xxx xxx xxx" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Payment Method -->
+            <div class="checkout-card">
+              <div class="checkout-card-header">
+                <span class="checkout-step-badge">٢</span>
+                <h5 class="fw-bold mb-0">وسيلة الدفع *</h5>
+              </div>
+              <div class="checkout-card-body">
+                {% if errors.payment %}
+                <div class="alert alert-danger rounded-3 mb-3 py-2">
+                  <i class="fa-solid fa-circle-exclamation me-2"></i>{{ errors.payment }}
+                </div>
+                {% endif %}
+
+                <div class="row g-3 mb-4">
+                  <div class="col-md-6">
+                    <div class="payment-option {% if form_data.payment == 'stripe' or not form_data.payment %}active{% endif %}"
+                         id="stripe-option" onclick="selectPayment('stripe')">
+                      <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+                        <i class="fa-brands fa-stripe fs-2 text-primary"></i>
+                        <i class="fa-brands fa-cc-visa fs-3 text-secondary"></i>
+                        <i class="fa-brands fa-cc-mastercard fs-3 text-danger"></i>
+                      </div>
+                      <span class="fw-semibold">بطاقة ائتمانية (Stripe)</span>
+                      <small class="text-muted d-block mt-1">دفع إلكتروني آمن ومشفر</small>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="payment-option {% if form_data.payment == 'cod' %}active{% endif %}"
+                         id="cod-option" onclick="selectPayment('cod')">
+                      <i class="fa-solid fa-hand-holding-dollar fs-2 mb-2 d-block" style="color:var(--primary-color);"></i>
+                      <span class="fw-semibold">الدفع عند الاستلام</span>
+                      <small class="text-muted d-block mt-1">سداد المبلغ عند وصول الطلب</small>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Stripe Info Banner -->
+                <div id="stripe-info-box" class="alert alert-info rounded-3 py-2 mb-4">
+                  <div class="d-flex align-items-center">
+                    <i class="fa-solid fa-shield-halved fs-4 me-2 text-primary"></i>
+                    <div>
+                      <small class="d-block fw-bold">معالجة الدفع عبر Stripe Checkout</small>
+                      <small class="text-muted">عند تأكيد الطلب، سيتم تحويلك لصفحة الدفع المشفرة التابعة لـ Stripe.</small>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100" id="submit-btn">
+                  <i class="fa-solid fa-lock me-2"></i> تأكيد الطلب والمتابعة
+                </button>
+                <p class="text-center text-muted small mt-2">
+                  <i class="fa-solid fa-shield-halved me-1 text-success"></i>
+                  معاملاتك محمية ومشفرة بالكامل بنسبة 100%
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── Order Summary Column ─────────────────────────────────── -->
+          <div class="col-lg-5" data-aos="fade-right">
+            <div class="order-summary-card p-4" style="position: sticky; top: 20px;">
+              <h5 class="fw-bold mb-4">
+                <i class="fa-solid fa-receipt me-2" style="color:var(--primary-color);"></i>
+                ملخص طلبك
+              </h5>
+              {% for item in cart_items %}
+              <div class="d-flex align-items-center gap-3 mb-3 pb-3" style="border-bottom: 1px solid var(--border-subtle);">
+                {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="rounded-2" style="width:50px;height:50px;object-fit:cover;flex-shrink:0;" />
+                {% else %}
+                <img src="https://picsum.photos/seed/{{ item.product.id }}book/50/50" alt="{{ item.product.name }}" class="rounded-2" style="width:50px;height:50px;object-fit:cover;flex-shrink:0;" />
+                {% endif %}
+                <div class="flex-grow-1">
+                  <p class="mb-0 fw-semibold small">{{ item.product.name }}</p>
+                  <small class="text-muted">× {{ item.quantity }}</small>
+                </div>
+                <span class="fw-bold small" style="color:var(--primary-color);">{{ item.price }} $</span>
+              </div>
+              {% endfor %}
+
+              <div class="d-flex justify-content-between mb-2 mt-3">
+                <span class="text-muted">المجموع الفرعي</span>
+                <span class="fw-semibold">{{ cart_total }} $</span>
+              </div>
+              <div class="d-flex justify-content-between mb-3">
+                <span class="text-muted">الشحن</span>
+                <span class="fw-semibold" style="color:#22c55e;">مجاني <i class="fa-solid fa-truck ms-1"></i></span>
+              </div>
+              <hr style="border-color:var(--border-subtle);">
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="fw-bold fs-5">الإجمالي</span>
+                <span class="fw-bold fs-4 total-price">{{ cart_total }} $</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+
+      {% endif %}
+    </div>
+
+    <script>
+      function selectPayment(type) {
+        document.getElementById('stripe-option').classList.remove('active');
+        document.getElementById('cod-option').classList.remove('active');
+        document.getElementById('payment_method_input').value = type;
+
+        if (type === 'stripe') {
+          document.getElementById('stripe-option').classList.add('active');
+          document.getElementById('stripe-info-box').style.display = 'block';
+        } else {
+          document.getElementById('cod-option').classList.add('active');
+          document.getElementById('stripe-info-box').style.display = 'none';
+        }
+      }
+
+      // Default or restore selected payment
+      const initialPayment = '{{ form_data.payment|default:"stripe" }}';
+      selectPayment(initialPayment);
+
+      // Client-side submit feedback
+      document.getElementById('checkout-form')?.addEventListener('submit', function() {
+        const btn = document.getElementById('submit-btn');
+        if (btn) {
+          btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> جاري المعالجة...';
+          btn.disabled = true;
+        }
+      });
+    </script>
+{% endblock %}

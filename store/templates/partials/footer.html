@@ -1,0 +1,57 @@
+{% load i18n %}
+
+<footer class="site-footer mt-auto pt-5 pb-4">
+    <div class="container">
+      <div class="row mb-5 g-4">
+        <!-- Brand Info -->
+        <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+          <span class="text-white fw-bold fs-4 d-block mb-3">
+            <i class="fa-solid fa-book-open me-2"></i> متجر كتب
+          </span>
+          <p class="text-white-50 lh-lg" style="font-size: 0.95rem;">
+            وجهتك الأولى لاكتشاف أفضل الكتب التقنية والبرمجية. نسعى لتوفير بيئة تعليمية متكاملة تواكب أحدث التقنيات.
+          </p>
+        </div>
+
+        <!-- Quick Links (Optional layout filler) -->
+        <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+          <h6 class="text-white fw-bold mb-3">روابط سريعة</h6>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="{% url 'store:home' %}" class="text-white-50 text-decoration-none footer-link">الرئيسية</a></li>
+            <li class="mb-2"><a href="{% url 'store:category' %}" class="text-white-50 text-decoration-none footer-link">تصفح الأقسام</a></li>
+            <li class="mb-2"><a href="{% url 'store:cart' %}" class="text-white-50 text-decoration-none footer-link">سلة المشتريات</a></li>
+          </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="col-lg-6 col-md-12">
+          <h6 class="text-white fw-bold mb-3">اشترك في نشرتنا البريدية</h6>
+          <p class="text-white-50 mb-3" style="font-size: 0.9rem;">احصل على أحدث الكتب والعروض الحصرية مباشرة في بريدك.</p>
+          <form class="d-flex bg-white rounded-pill p-1 shadow-sm" onsubmit="event.preventDefault();" style="max-width: 500px;">
+            <input type="email" class="form-control border-0 bg-transparent px-3" placeholder="أدخل بريدك الإلكتروني" required>
+            <button class="btn btn-primary rounded-pill px-4" type="submit">اشتراك</button>
+          </form>
+        </div>
+      </div>
+
+      <hr style="border-color: rgba(255,255,255,0.1);">
+
+      <!-- Bottom Footer -->
+      <div class="row align-items-center pt-2">
+        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+          <small class="text-white-50">© 2026 {%trans 'جميع الحقوق محفوظة.' %}</small>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <a href="https://github.com/Shaker17s" target="_blank" rel="noopener" class="social-icon text-white me-3 d-inline-block">
+            <i class="fa-brands fa-github fs-5"></i>
+          </a>
+          <a href="https://www.instagram.com/s_h_a_k_err/" target="_blank" rel="noopener" class="social-icon text-white me-3 d-inline-block">
+            <i class="fa-brands fa-instagram fs-5"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/shaker-abdallah-79b0a1339" target="_blank" rel="noopener" class="social-icon text-white d-inline-block">
+            <i class="fa-brands fa-linkedin fs-5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+
+{% include 'partials/slider.html' with sliders=sliders %}
+
+    <div class="container my-5">
+      <section>
+        <div class="text-center mb-5" data-aos="fade-up">
+          <h2 class="section-title text-secondary">
+            <i class="fa-solid fa-star me-2" style="color: #f5a623;"></i>
+            كتب مميزة
+          </h2>
+        </div>
+        <div class="row g-4">
+          {% for product in products %}
+          <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}50">
+            {% include 'common/product_card.html' with product=product %}
+          </div>
+          {% empty %}
+          <div class="col-12 text-center py-5" data-aos="zoom-in">
+            <i class="fa-solid fa-box-open empty-cart-icon mb-3"></i>
+            <p class="h5 text-muted">لا توجد منتجات مميزة حالياً.</p>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+{% endblock %}

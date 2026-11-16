@@ -1,0 +1,49 @@
+{% load i18n %}
+
+<div class="sticky-top glass-navbar">
+  <nav class="navbar navbar-expand-lg navbar-light bg-transparent py-3">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="{% url 'store:home' %}">
+        <i class="fa-solid fa-book-open me-2" style="background: linear-gradient(135deg, #0d6efd, #6610f2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+        {%trans 'متجر كتب' %}
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse mt-2 mt-lg-0" id="navbarSupportedContent">
+       {% include 'partials/header_search.html' %}
+        <div class="d-flex align-items-center my-2 my-lg-0 gap-2">
+          <button id="theme-toggle" class="theme-toggle-btn" title="تبديل المظهر">
+             <!-- Icon injected by JS -->
+          </button>
+          <a href="{% url 'store:cart' %}" class="btn btn-outline-primary d-flex align-items-center gap-2 rounded-pill px-4" type="button">
+            <i class="fa-solid fa-bag-shopping"></i>
+            {%trans 'السلة' %} <span class="badge bg-primary rounded-circle ms-1">{{ cart_count }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <nav class="navbar navbar-expand-lg category-nav">
+    <div class="container">
+      <div class="collapse navbar-collapse mt-2 mt-lg-0">
+        <ul class="navbar-nav my-2 my-lg-0 gap-1">
+          <li class="nav-item">
+            <a class="nav-link mx-1" href="{% url 'store:category' %}" role="button">
+              <i class="fa-solid fa-border-all me-1"></i> كل الأقسام
+            </a>
+          </li>
+          {% for cat in all_categories %}
+          <li class="nav-item">
+            <a class="nav-link mx-1" href="{% url 'store:category-detail' cid=cat.id %}" role="button">
+              {{ cat.name }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    </div>
+  </nav>
+</div>

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+    <div class="container my-5">
+
+      <div class="text-center mb-5" data-aos="fade-down">
+        <h2 class="section-title text-secondary">
+          <i class="fa-solid fa-bag-shopping me-2"></i> سلة المشتريات
+        </h2>
+      </div>
+
+      {% if cart_items %}
+        {% for item in cart_items %}
+        <div class="card cart-item my-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}50">
+          <div class="card-body p-3">
+            <div class="row align-items-center g-3">
+              <div class="col-md-2 col-3 text-center">
+                {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="rounded-3" style="width:80px; height:80px; object-fit:cover;" />
+                {% else %}
+                <img src="https://placehold.co/80" alt="{{ item.product.name }}" class="rounded-3" style="width:80px; height:80px;" />
+                {% endif %}
+              </div>
+              <div class="col my-auto">
+                <h6 class="mb-1 fw-bold">{{ item.product.name }}</h6>
+                <small class="text-muted">
+                  {% if item.product.author %}{{ item.product.author.name }}{% endif %}
+                </small><br>
+                <div class="d-inline-flex align-items-center mt-2 border rounded-pill px-2 py-1 bg-light shadow-sm" style="direction: ltr;">
+                  <a href="{% url 'store:decrement-cart' pid=item.product.id %}" class="btn btn-sm text-secondary p-0 px-2 fw-bold text-decoration-none" title="إنقاص الكمية">-</a>
+                  <span class="mx-2 fw-bold text-dark" style="min-width: 20px; text-align: center; font-size: 0.9rem;">{{ item.quantity }}</span>
+                  <a href="{% url 'store:add-to-cart' pid=item.product.id %}" class="btn btn-sm text-secondary p-0 px-2 fw-bold text-decoration-none" title="زيادة الكمية">+</a>
+                </div>
+              </div>
+              <div class="col-md-2 col-3 my-auto text-center">
+                <span class="fw-bold fs-5" style="color: var(--primary-color);">{{ item.price }} $</span>
+              </div>
+              <div class="col-md-2 col-3 my-auto text-center">
+                <a href="{% url 'store:remove-from-cart' pid=item.product.id %}" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                  <i class="fa-solid fa-trash-can"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        <!-- Order Summary Card -->
+        <div class="row mt-5">
+          <div class="col-lg-4 col-md-5 ms-auto" data-aos="fade-up">
+            <div class="order-summary-card p-4">
+              <h5 class="fw-bold mb-4">
+                <i class="fa-solid fa-receipt me-2" style="color: var(--primary-color);"></i>
+                ملخص الطلب
+              </h5>
+              <div class="d-flex justify-content-between mb-3">
+                <span class="text-muted">المجموع الفرعي</span>
+                <span class="fw-semibold">{{ cart_total }} $</span>
+              </div>
+              <div class="d-flex justify-content-between mb-3">
+                <span class="text-muted">الشحن</span>
+                <span class="fw-semibold" style="color: #22c55e;">مجاني <i class="fa-solid fa-truck ms-1"></i></span>
+              </div>
+              <hr class="my-3" style="border-color: var(--border-subtle);">
+              <div class="d-flex justify-content-between mb-4 align-items-center">
+                <span class="fw-bold fs-5">الإجمالي</span>
+                <span class="fw-bold fs-4 total-price">{{ cart_total }} $</span>
+              </div>
+              <a href="{% url 'store:checkout' %}" class="btn btn-primary btn-lg w-100">
+                <i class="fa-solid fa-credit-card me-2"></i> متابعة الدفع
+              </a>
+              <a href="{% url 'store:home' %}" class="btn btn-outline-secondary w-100 mt-2">
+                <i class="fa-solid fa-arrow-right me-2"></i> متابعة التسوق
+              </a>
+            </div>
+          </div>
+        </div>
+
+      {% else %}
+        <!-- Empty Cart State -->
+        <div class="text-center py-5" data-aos="zoom-in">
+          <i class="fa-solid fa-cart-shopping empty-cart-icon mb-4 d-block"></i>
+          <h3 class="text-secondary mb-3">سلتك فارغة!</h3>
+          <p class="text-muted mb-4 fs-5">لم تقم بإضافة أي كتب بعد. تصفّح مكتبتنا واعثر على ما يناسبك.</p>
+          <a href="{% url 'store:home' %}" class="btn btn-primary btn-lg px-5 py-3">
+            <i class="fa-solid fa-arrow-right me-2"></i> تصفّح الكتب
+          </a>
+        </div>
+      {% endif %}
+
+    </div>
+{% endblock %}

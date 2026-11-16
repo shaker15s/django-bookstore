@@ -1,0 +1,16 @@
+{% load i18n %}
+
+  <form action="{% url 'store:search' %}" method="get" class="d-flex mx-auto my-2 my-lg-0">
+    <div class="search-bar d-flex align-items-center">
+      <select name="category" class="form-select" style="max-width: 140px; font-size: 0.88rem; padding: 10px 12px;">
+        <option value="">كل الأقسام</option>
+        {% for cat in all_categories %}
+        <option value="{{ cat.id }}">{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+      <input type="text" name="q" class="form-control" style="min-width: 280px; padding: 10px 16px;" placeholder="ابحث عن كتاب..." />
+      <button class="btn btn-primary" type="submit">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </div>
+  </form>

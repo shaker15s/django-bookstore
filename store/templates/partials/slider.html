@@ -1,0 +1,58 @@
+ <div class="swiper main-slider">
+      <div class="swiper-pagination"></div>
+      <div class="swiper-wrapper">
+         {% for slider in sliders %}
+        <div class="swiper-slide">
+          <div class="container py-4">
+            <div class="row align-items-center">
+              <div class="col-md-4 text-center d-none d-lg-block" data-aos="zoom-in">
+                {% if slider.image %}
+                <img src="{{ slider.image.url }}" alt="{{ slider.title }}" class="img-fluid rounded-4 shadow" style="max-height: 280px; object-fit: cover;" />
+                {% else %}
+                <img src="https://placehold.co/300" alt="{{ slider.title }}" class="img-fluid rounded-4 shadow" />
+                {% endif %}
+              </div>
+              <div class="col-md-8">
+                <h1 class="text-secondary mb-3">
+                  {{ slider.title }}
+                </h1>
+                <p class="text-muted fs-5 lh-lg">
+                  {{ slider.subtitle }}
+                </p>
+                <a href="{% url 'store:category' %}" class="btn btn-primary mt-3 px-4 py-2">
+                  <i class="fa-solid fa-arrow-left me-2"></i> تصفّح الكتب
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="swiper-slide">
+          <div class="container py-5 text-center">
+            <i class="fa-solid fa-book-open empty-cart-icon mb-3"></i>
+            <h2 class="text-secondary">مرحباً بك في متجر الكتب</h2>
+            <p class="text-muted">تصفّح أحدث الكتب وأكثرها تميزاً</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="swiper-scrollbar"></div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function() {
+          var swiperEl = document.querySelector('.main-slider');
+          if (swiperEl && swiperEl.swiper) {
+             swiperEl.swiper.params.speed = 600;
+             setInterval(function() {
+               if(swiperEl.swiper.isEnd) {
+                 swiperEl.swiper.slideTo(0);
+               } else {
+                 swiperEl.swiper.slideNext();
+               }
+             }, 4000);
+          }
+        }, 500);
+      });
+    </script>

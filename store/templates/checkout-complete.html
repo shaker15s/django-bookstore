@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+    <div class="container my-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 text-center" data-aos="zoom-in">
+
+          <!-- Success Animation -->
+          <div class="mb-4" style="font-size: 5rem; line-height: 1; animation: successPulse 0.6s ease-out;">
+            <span style="background: linear-gradient(135deg, #22c55e, #16a34a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">
+              <i class="fa-solid fa-circle-check"></i>
+            </span>
+          </div>
+
+          <div class="order-summary-card p-5">
+            <h2 class="fw-bold mb-2">تم استلام طلبك بنجاح! 🎉</h2>
+            {% if order %}
+            <p class="text-muted mb-3 fs-5">
+              رقم الطلب: <strong class="text-primary">#{{ order.id }}</strong>
+            </p>
+            <div class="card mb-4 bg-light border-0 rounded-3 text-start p-3">
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">حالة الطلب:</span>
+                <span class="badge {% if order.status == 'paid' %}bg-success{% else %}bg-warning text-dark{% endif %} px-3 py-2">
+                  {{ order.get_status_display }}
+                </span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">طريقة الدفع:</span>
+                <span class="fw-bold">{{ order.customer.payment_method|default:order.payment_method }}</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">الإجمالي:</span>
+                <span class="fw-bold text-primary fs-5">{{ order.total_price }} $</span>
+              </div>
+            </div>
+            {% else %}
+            <p class="text-muted mb-4 fs-5">
+              لقد تمت عملية الشراء بنجاح. <br>
+              تم إرسال تأكيد الطلب إلى بريدك الإلكتروني.
+            </p>
+            {% endif %}
+
+            <div class="alert rounded-3 py-3 mb-4" style="background: rgba(34,197,94,0.08); border: 1.5px solid rgba(34,197,94,0.2); color: var(--text-color);">
+              <i class="fa-solid fa-envelope me-2 text-success"></i>
+              تحقق من بريدك الإلكتروني للحصول على تفاصيل وإيصال الطلب.
+            </div>
+
+            <div class="d-grid gap-2">
+              <a href="{% url 'store:home' %}" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-house me-2"></i> العودة للصفحة الرئيسية
+              </a>
+              <a href="{% url 'store:category' %}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-book me-2"></i> تصفح المزيد من الكتب
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <style>
+      @keyframes successPulse {
+        0%   { transform: scale(0.5); opacity: 0; }
+        70%  { transform: scale(1.1); }
+        100% { transform: scale(1);   opacity: 1; }
+      }
+    </style>
+{% endblock %}

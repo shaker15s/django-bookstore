@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+    <div class="container my-5">
+
+      <!-- Product Main Card -->
+      <section data-aos="fade-up">
+        <div class="card product-detail-card mb-4">
+          <div class="row g-0">
+            <div class="col-lg-4 col-md-5 p-4 d-flex align-items-center justify-content-center">
+              {% if product.image %}
+              <img src="{{ product.image.url }}" class="img-fluid rounded-4 shadow-sm" alt="{{ product.name }}" style="max-height: 350px;" />
+              {% else %}
+              <img src="https://picsum.photos/seed/{{ product.id }}book/300/350" class="img-fluid rounded-4 shadow-sm" alt="{{ product.name }}" style="max-height: 350px; object-fit:cover;" />
+              {% endif %}
+            </div>
+            <div class="col-lg-8 col-md-7">
+              <div class="card-body p-4">
+                <h3 class="card-title fw-bold mb-3">{{ product.name }}</h3>
+
+                {% if product.category %}
+                <span class="badge rounded-pill px-3 py-2 mb-3 d-inline-block" style="background: var(--primary-gradient); color: #fff;">
+                  <i class="fa-solid fa-tag me-1"></i> {{ product.category.name }}
+                </span>
+                {% endif %}
+
+                <p class="card-text mt-2 lh-lg" style="opacity: 0.85;">
+                  {{ product.short_description|default:"لا يوجد وصف قصير متاح." }}
+                </p>
+                <p class="card-text fs-3 fw-bold mt-3" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                  {{ product.price }} $
+                </p>
+
+                {% if product.stock > 0 %}
+                <span class="badge bg-success rounded-pill px-3 py-2 mb-3"><i class="fa-solid fa-check me-1"></i> متوفر ({{ product.stock }})</span>
+                {% else %}
+                <span class="badge bg-danger rounded-pill px-3 py-2 mb-3"><i class="fa-solid fa-xmark me-1"></i> غير متوفر</span>
+                {% endif %}
+
+                <div class="mt-3 d-flex gap-3 flex-wrap">
+                  <a href="{% url 'store:add-to-cart' pid=product.id %}" class="btn btn-primary btn-lg px-4">
+                    <i class="fa-solid fa-cart-plus me-2"></i> إضافة إلى السلة
+                  </a>
+                  <a href="{% url 'store:category' %}" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fa-solid fa-arrow-right me-2"></i> تابع التصفح
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Author Card -->
+      {% if product.author %}
+      <section class="mt-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="card author-card p-4">
+          <div class="d-flex align-items-start gap-4">
+            <div class="author-avatar">
+              <i class="fa-solid fa-user-pen"></i>
+            </div>
+            <div class="flex-grow-1">
+              <h5 class="fw-bold mb-1">{{ product.author.name }}</h5>
+              <small class="text-muted d-block mb-2">
+                <i class="fa-solid fa-feather-pointed me-1"></i> مؤلف الكتاب
+              </small>
+              {% if product.author.bio %}
+              <p class="lh-lg mb-0" style="opacity: 0.85;">{{ product.author.bio }}</p>
+              {% else %}
+              <p class="mb-0" style="opacity: 0.85;">لم تتم إضافة نبذة عن هذا المؤلف بعد.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </section>
+      {% endif %}
+
+      <!-- Description Tabs -->
+      <section class="mt-4" data-aos="fade-up" data-aos-delay="150">
+        <div class="card product-detail-card">
+          <div class="card-header p-3 bg-transparent border-0">
+            <ul class="nav nav-pills gap-2" id="pills-tab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-desc-tab" data-bs-toggle="pill"
+                  data-bs-target="#pills-desc" type="button" role="tab">
+                  <i class="fa-solid fa-align-right me-1"></i> الوصف الكامل
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-info-tab" data-bs-toggle="pill"
+                  data-bs-target="#pills-info" type="button" role="tab">
+                  <i class="fa-solid fa-circle-info me-1"></i> معلومات إضافية
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body p-4">
+            <div class="tab-content" id="pills-tabContent">
+              <div class="tab-pane fade show active" id="pills-desc" role="tabpanel">
+                <p class="lh-lg" style="opacity: 0.85;">
+                  {{ product.description|default:"لا يوجد وصف تفصيلي متاح لهذا المنتج." }}
+                </p>
+              </div>
+              <div class="tab-pane fade" id="pills-info" role="tabpanel">
+                <table class="table table-borderless">
+                  <tbody>
+                    <tr>
+                      <td class="fw-bold" style="width: 140px;"><i class="fa-solid fa-user me-2 text-primary"></i> المؤلف</td>
+                      <td class="text-muted">{% if product.author %}{{ product.author.name }}{% else %}غير محدد{% endif %}</td>
+                    </tr>
+                    <tr>
+                      <td class="fw-bold"><i class="fa-solid fa-layer-group me-2 text-primary"></i> القسم</td>
+                      <td class="text-muted">{% if product.category %}{{ product.category.name }}{% else %}غير محدد{% endif %}</td>
+                    </tr>
+                    <tr>
+                      <td class="fw-bold"><i class="fa-solid fa-boxes-stacked me-2 text-primary"></i> المخزون</td>
+                      <td class="text-muted">{{ product.stock }} نسخة</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Products -->
+      <section class="mt-5" data-aos="fade-up" data-aos-delay="200">
+        <div class="text-center mb-4">
+          <h3 class="section-title text-secondary">
+            <i class="fa-solid fa-book me-2"></i> كتب مشابهة
+          </h3>
+        </div>
+        <div class="row g-4">
+          {% for rel_product in related_products %}
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}40">
+             {% include 'common/product_card.html' with product=rel_product %}
+          </div>
+          {% empty %}
+          <div class="col-12 text-center text-muted py-3">
+            <i class="fa-solid fa-circle-info me-1"></i> لا توجد كتب مشابهة حالياً.
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+    </div>
+{% endblock %}
