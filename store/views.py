@@ -63,12 +63,27 @@ def _send_order_email(new_order, cart_items, cart_total, email, first_name, last
         '— فريق متجر كتب',
     ]
     message = '\n'.join(lines)
+    html_message = None
+    try:
+        html_message = render_to_string('emails/order_confirmation.html', {
+            'new_order': new_order,
+            'cart_items': cart_items,
+            'cart_total': cart_total,
+            'email': email,
+            'first_name': first_name,
+            'last_name': last_name,
+            'payment_method': payment_method,
+        })
+    except Exception:
+        pass
+
     try:
         send_mail(
             subject=subject,
             message=message,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[email],
+            html_message=html_message,
             fail_silently=True,
         )
     except Exception:

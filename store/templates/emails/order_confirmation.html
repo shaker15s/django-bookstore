@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <title>تأكيد الطلب</title>
+  </head>
+  <body style="font-size: 15px; font-weight: 400; color: #161c2d; background: #f4f6f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px 0;">
+    <div style="margin: 20px auto; max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;">
+      <div style="background: linear-gradient(135deg, #2563eb, #1d4ed8); padding: 30px 20px; text-align: center; color: #ffffff;">
+        <h1 style="margin: 0; font-size: 26px; font-weight: 700;">📚 متجر كتب</h1>
+        <p style="margin: 8px 0 0; font-size: 15px; opacity: 0.9;">شكراً لتسوقك معنا، تم تأكيد طلبك بنجاح!</p>
+      </div>
+
+      <div style="padding: 24px;">
+        <table cellpadding="0" cellspacing="0" style="width: 100%; margin-bottom: 20px;">
+          <tr>
+            <td style="padding: 6px 0; color: #64748b; width: 100px;">العميل:</td>
+            <td style="padding: 6px 0; font-weight: 600; color: #0f172a;">{{ first_name }} {{ last_name }}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">رقم الطلب:</td>
+            <td style="padding: 6px 0; font-weight: 600; color: #2563eb;">#{{ new_order.id }}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">وسيلة الدفع:</td>
+            <td style="padding: 6px 0; font-weight: 600; color: #0f172a;">{{ payment_method }}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">حالة الطلب:</td>
+            <td style="padding: 6px 0; font-weight: 600; color: #16a34a;">{{ new_order.get_status_display }}</td>
+          </tr>
+        </table>
+
+        <h3 style="font-size: 16px; margin: 20px 0 10px; color: #1e293b; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">تفاصيل الكتب المطلوبة:</h3>
+        <table cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background: #f8fafc; color: #475569; font-size: 13px;">
+              <th style="padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0;">الكتاب</th>
+              <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">الكمية</th>
+              <th style="padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">السعر</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart_items %}
+            <tr>
+              <td style="padding: 12px 10px; border-bottom: 1px solid #f1f5f9; font-weight: 500;">{{ item.product.name }}</td>
+              <td style="padding: 12px 10px; border-bottom: 1px solid #f1f5f9; text-align: center;">{{ item.quantity }}</td>
+              <td style="padding: 12px 10px; border-bottom: 1px solid #f1f5f9; text-align: left; font-weight: 600; color: #2563eb;">{{ item.price }} $</td>
+            </tr>
+            {% endfor %}
+            <tr>
+              <td colspan="2" style="padding: 16px 10px; font-weight: 700; font-size: 16px; text-align: right;">الإجمالي:</td>
+              <td style="padding: 16px 10px; font-weight: 700; font-size: 18px; text-align: left; color: #2563eb;">{{ cart_total }} $</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top: 30px; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 20px; color: #94a3b8; font-size: 13px;">
+          إذا كان لديك أي استفسار، يرجى الرد مباشرة على هذه الرسالة.<br>
+          © متجر كتب - جميع الحقوق محفوظة.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
