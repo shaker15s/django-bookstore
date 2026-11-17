@@ -118,3 +118,11 @@ class slider(models.Model):
 
     def __str__(self):
         return self.title
+
+
+# Model name aliases for standard PEP8 PascalCase compliance
+Category = category
+Product = product
+Order = order
+OrderProduct = orderproduct
+Slider = slider
